@@ -13,13 +13,16 @@ export class SearchTargetComponent implements OnInit {
   currentSelector: string;
   injectedContent?: string;
 
+  private _selectedElements: HTMLElement[] = [];
+  private _selectionElementClassName: string = "selection-target";
+
   constructor(
     private _selectorNotifierService: SelectorNotifierService,
     private _htmlTemplateBuilder: HtmlTemplateBuilderService,
   ) {
     this.currentSelector = "";
     _selectorNotifierService.$selector.subscribe({
-      next: (value) => this.currentSelector = value
+      next: this.handleSelectorStringUpdate.bind(this)
     })
   }
 
@@ -42,5 +45,33 @@ export class SearchTargetComponent implements OnInit {
       // removing this if would cause an error to show up in the console
       this.snippetContainer?.nativeElement.appendChild(fragment);
     }
+  }
+
+  handleSelectorStringUpdate(selector: string) {
+    this._deselectAllElements();
+
+    try {
+      this.snippetContainer?.nativeElement.querySelectorAll(selector)
+        .forEach((element, key, parent) => {
+          console.log(element);
+
+          this._select(element as HTMLElement);
+        }
+      );
+    } catch (_) { }
+  }
+
+  private _select(element: HTMLElement) {
+    element.classList.add(this._selectionElementClassName);
+    this._selectedElements.push(element);
+  }
+
+  private _deselectElement(element: HTMLElement) {
+    element.classList.remove(this._selectionElementClassName);
+  }
+
+  private _deselectAllElements() {
+    this._selectedElements.forEach(el => this._deselectElement(el));
+    this._selectedElements = []
   }
 }

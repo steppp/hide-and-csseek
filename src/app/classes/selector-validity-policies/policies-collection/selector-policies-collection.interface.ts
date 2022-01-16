@@ -1,4 +1,4 @@
-import { ISelectorPolicy } from "./policies/selector-policy.interface";
+import { ISelectorPolicy } from "../policies/selector-policy.interface"
 
 export interface ISelectorPoliciesCollection {
     /**

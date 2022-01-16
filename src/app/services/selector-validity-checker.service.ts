@@ -21,7 +21,6 @@ export class SelectorValidityCheckerService {
   private resetPolicyEvaluationParams() {
     this._policies = [
       new AlwaysValidSelectorPolicy(),
-      new InvalidWhenEndsWithASelectorPolicy()
     ]
     this._policies.sort((a, b) => a.options.priority - b.options.priority);
     this._policies.filter(policy => policy.options.enabled);
