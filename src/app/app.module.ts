@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { SelectorEmitterComponent } from './components/selector-emitter/selector-emitter.component';
 import { SearchTargetComponent } from './components/search-target/search-target.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { SearchTargetComponent } from './components/search-target/search-target.
     SearchTargetComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
