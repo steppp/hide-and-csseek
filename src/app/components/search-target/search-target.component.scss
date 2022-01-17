@@ -1,5 +1,17 @@
 :host ::ng-deep #snippet-ctr {
+    font-size: 1.8rem;
+    font-family: monospace;
+    color: whitesmoke;
+    line-height: 1.5;
+    
     * {
         transition: background-color 0.2s;
+        padding-left: .5rem;
+        padding-right: .5rem;
     }
+}
+
+:host {
+    margin: auto;
+    margin-top: 5rem;
 }

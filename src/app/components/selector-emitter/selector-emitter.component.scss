@@ -1,0 +1,32 @@
+input {
+    --focus-border-size: 2px;
+
+    box-sizing: border-box;
+
+    line-height: 3rem;
+    font-size: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(230, 230, 230, 0.2);
+    box-shadow: 2px 7px 55px -7px rgba(255, 255, 255, 0.14);
+    outline: none;
+    width: 40vw;
+
+    font-weight: 400;
+    font-family: monospace;
+    color:rgba(255, 255, 255, 0.9);
+
+    border-width: 0;
+    margin: 0;
+
+    transition-property: border-width, box-shadow, margin;
+    transition-duration: .2s;
+    transition-timing-function: ease-out;
+
+    &:focus {
+        margin: calc(-1 * var(--focus-border-size));
+        border-width: var(--focus-border-size);
+        box-shadow: 2px 7px 55px -7px rgba(255, 255, 255, 0.23);
+    }
+}
