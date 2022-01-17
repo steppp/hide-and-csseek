@@ -38,7 +38,11 @@ export class SearchTargetComponent implements OnInit {
   private handleNewDocumentFragment(fragment: DocumentFragment | undefined) {
     if (!fragment) {
       console.warn("Document fragment is undefined");
+      return;
     }
+
+    const fragmentDescription = this._createVisualizationFor(fragment!);
+    console.log(fragmentDescription);
 
     this.snippetContainer?.nativeElement.replaceChildren();
     if (fragment) {
@@ -73,5 +77,64 @@ export class SearchTargetComponent implements OnInit {
   private _deselectAllElements() {
     this._selectedElements.forEach(el => this._deselectElement(el));
     this._selectedElements = []
+  }
+
+  private _createVisualizationFor(fragment: Node, level: number = 0): string {
+    const prependedTabs = "\t".repeat(level);
+    let strResult = "";
+
+    switch (fragment.nodeType) {
+      case Node.TEXT_NODE:
+        if (fragment.textContent?.trim() === "") {
+          return "";
+        }
+
+        return prependedTabs + fragment.textContent + "\n";
+
+      case Node.DOCUMENT_FRAGMENT_NODE:
+        Array.from(fragment.childNodes).forEach(child => {
+          strResult += prependedTabs + this._createVisualizationFor(child, level + 1) + "\n";
+        });
+        return strResult;
+        
+      default:
+        strResult += prependedTabs + this._getElementOpeningTagStringRepresentation(fragment);
+        strResult += "\n";
+
+        Array.from(fragment.childNodes).forEach(child => {
+          strResult += this._createVisualizationFor(child, level + 1);
+        });
+
+        strResult += prependedTabs + this._getElementClosingTagStringRepresentation(fragment);
+        strResult += "\n"
+    }
+
+    return strResult;
+  }
+
+  private _getElementOpeningTagStringRepresentation(node: Node): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent ?? "";
+    }
+
+    const htmlElement = node as HTMLElement;
+    if (!htmlElement) {
+      return "";
+    }
+
+    return `<${htmlElement.tagName.toLowerCase()} class="${htmlElement.classList.value}">`;
+  }
+
+  private _getElementClosingTagStringRepresentation(node: Node): string {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.textContent ?? "";
+    }
+
+    const htmlElement = node as HTMLElement;
+    if (!htmlElement) {
+      return "";
+    }
+
+    return `</${htmlElement.tagName.toLowerCase()}>`;
   }
 }
