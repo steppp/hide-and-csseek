@@ -41,13 +41,12 @@ export class SearchTargetComponent implements OnInit {
       return;
     }
 
-    const fragmentDescription = this._createVisualizationFor(fragment!);
-    console.log(fragmentDescription);
+    const convertedFragment = this._createVisualizationFor(fragment!);
 
     this.snippetContainer?.nativeElement.replaceChildren();
-    if (fragment) {
+    if (convertedFragment) {
       // removing this if would cause an error to show up in the console
-      this.snippetContainer?.nativeElement.appendChild(fragment);
+      this.snippetContainer?.nativeElement.appendChild(convertedFragment);
     }
   }
 
@@ -79,37 +78,46 @@ export class SearchTargetComponent implements OnInit {
     this._selectedElements = []
   }
 
-  private _createVisualizationFor(fragment: Node, level: number = 0): string {
-    const prependedTabs = "\t".repeat(level);
-    let strResult = "";
+  private _createVisualizationFor(fragment: Node, level: number = 0): Node | undefined {
+    let elementCounter = 0;
+    let resultFragment = new DocumentFragment();
 
     switch (fragment.nodeType) {
       case Node.TEXT_NODE:
-        if (fragment.textContent?.trim() === "") {
-          return "";
-        }
-
-        return prependedTabs + fragment.textContent + "\n";
+        return undefined;
 
       case Node.DOCUMENT_FRAGMENT_NODE:
+        let documentNodeChildRepresentation: Node | undefined;
+
         Array.from(fragment.childNodes).forEach(child => {
-          strResult += prependedTabs + this._createVisualizationFor(child, level + 1) + "\n";
+          documentNodeChildRepresentation = this._createVisualizationFor(child, level + 1);
+          (documentNodeChildRepresentation && resultFragment.appendChild(documentNodeChildRepresentation));
         });
-        return strResult;
+        return resultFragment;
         
       default:
-        strResult += prependedTabs + this._getElementOpeningTagStringRepresentation(fragment);
-        strResult += "\n";
+        const newDivId = this._getElementId(level, elementCounter);
+        (fragment as HTMLElement)?.setAttribute("id", newDivId);
+        const newDiv = document.createElement("div");
+        newDiv.classList.add("new-level");
+        newDiv.dataset["targetElementId"] = newDivId;
 
+        newDiv.appendChild(document
+          .createTextNode(this._getElementOpeningTagStringRepresentation(fragment) + "\n"));
+
+        let normalNodeChildRepresentation: Node | undefined;
         Array.from(fragment.childNodes).forEach(child => {
-          strResult += this._createVisualizationFor(child, level + 1);
+          normalNodeChildRepresentation = this._createVisualizationFor(child, level + 1);
+          (normalNodeChildRepresentation && newDiv.appendChild(normalNodeChildRepresentation));
         });
 
-        strResult += prependedTabs + this._getElementClosingTagStringRepresentation(fragment);
-        strResult += "\n"
+        newDiv.appendChild(document
+          .createTextNode(this._getElementClosingTagStringRepresentation(fragment) + "\n"));
+
+        resultFragment.appendChild(newDiv);
     }
 
-    return strResult;
+    return resultFragment;
   }
 
   private _getElementOpeningTagStringRepresentation(node: Node): string {
@@ -122,7 +130,7 @@ export class SearchTargetComponent implements OnInit {
       return "";
     }
 
-    return `<${htmlElement.tagName.toLowerCase()} class="${htmlElement.classList.value}">`;
+    return `<${htmlElement.tagName.toLowerCase()}>`;
   }
 
   private _getElementClosingTagStringRepresentation(node: Node): string {
@@ -136,5 +144,9 @@ export class SearchTargetComponent implements OnInit {
     }
 
     return `</${htmlElement.tagName.toLowerCase()}>`;
+  }
+
+  private _getElementId(level: number, siblingNo: number): string {
+    return `lvl${level}-n${siblingNo}`;
   }
 }

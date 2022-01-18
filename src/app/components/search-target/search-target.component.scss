@@ -2,12 +2,16 @@
     font-size: 1.8rem;
     font-family: monospace;
     color: whitesmoke;
-    line-height: 1.5;
+    // line-height: 1.5;
     
     * {
         transition: background-color 0.2s;
         padding-left: .5rem;
         padding-right: .5rem;
+    }
+
+    .new-level {
+        padding-left: 1em;
     }
 }
 
