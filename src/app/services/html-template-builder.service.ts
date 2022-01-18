@@ -14,15 +14,15 @@ export class HtmlTemplateBuilderService {
   }
   
   constructor( 
-    private _htmlTemplateProvider: HtmlTemplateProviderService
+    htmlTemplateProvider: HtmlTemplateProviderService
   ) {
     this.$domTemplate = new BehaviorSubject<DocumentFragment | undefined>(undefined);
 
-    _htmlTemplateProvider.$htmlSnippet.pipe(
+    htmlTemplateProvider.$htmlSnippet.pipe(
       map(template => this._createHTMLHierarchy(template)),
       tap(fragment => this.$domTemplate.next(fragment))
     ).subscribe()
-    _htmlTemplateProvider.next();
+    htmlTemplateProvider.next();
   }
 
   private _createHTMLHierarchy(template: string | undefined): DocumentFragment | undefined {

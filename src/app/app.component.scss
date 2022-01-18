@@ -41,6 +41,41 @@
     display: flex;
 }
 
+.next-template-btn-ctr {
+    position: absolute;
+    left: 4rem;
+    bottom: 4rem;
+
+    button {
+        appearance: none;
+        -moz-appearance: none;
+        -webkit-appearance: none;
+        background-color: transparent;
+        border: none;
+        color: rgb(155, 53, 196);
+        font-size: 1.6rem;
+        border: 2px solid rgb(155, 53, 196);
+        padding: .5em 1em;
+        border-radius: 10px;
+        font-weight: 500;
+        cursor: pointer;
+        text-transform: uppercase;
+
+        transition-property: background-color, color, transform;
+        transition-duration: .2s;
+        transition-timing-function: linear;
+
+        &:hover {
+            background-color: rgb(155, 53, 196);
+            color: whitesmoke;
+        }
+
+        &:active {
+            transform: scale(1.1);
+        }
+    }
+}
+
 @keyframes css-open-close {
     0% {
         max-width: 2.5em;
